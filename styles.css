@@ -26,6 +26,34 @@
   
   --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: all 0.2s ease;
+
+  /* Restructured Accessible Variables */
+  --card-border: rgba(255, 255, 255, 0.5);
+  --heading-line-bg: #eaecef;
+  --info-item-bg: rgba(255, 255, 255, 0.8);
+  --info-item-border: rgba(255, 139, 139, 0.15);
+  --info-item-shadow: 0 4px 15px rgba(255, 139, 139, 0.05);
+  --profile-border: rgba(255, 255, 255, 0.8);
+  --profile-bg: #f7fafc;
+  --avatar-bg: #fff5f5;
+  --project-card-bg: rgba(255, 255, 255, 0.9);
+  --project-card-border: rgba(255, 255, 255, 0.8);
+  --project-img-bg: #fff5f5;
+  --project-img-border: #f7fafc;
+  --contact-card-bg: rgba(255, 255, 255, 0.6);
+  --contact-card-border: rgba(255, 255, 255, 0.8);
+  --contact-icon-bg: #fff0f0;
+  --contact-form-bg: rgba(255, 255, 255, 0.8);
+  --contact-form-border: rgba(255, 255, 255, 0.9);
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --input-border: rgba(255, 139, 139, 0.25);
+  --customizer-bg: rgba(255, 255, 255, 0.95);
+  --customizer-footer-bg: #fcf8f8;
+  --btn-secondary-bg: white;
+  --btn-secondary-border: rgba(255, 139, 139, 0.3);
+  --editor-item-bg: rgba(255, 139, 139, 0.05);
+  --social-btn-bg: rgba(255, 255, 255, 0.8);
+  --social-btn-border: rgba(255, 139, 139, 0.2);
 }
 
 * {
@@ -107,7 +135,7 @@ body {
   position: relative;
   overflow: hidden;
   z-index: 10;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--card-border);
   backdrop-filter: blur(20px);
 }
 
@@ -294,7 +322,7 @@ body {
 .heading-line {
   width: 80px;
   height: 4px;
-  background: #eaecef;
+  background: var(--heading-line-bg);
   border-radius: 2px;
   margin-bottom: 2rem;
 }
@@ -315,8 +343,8 @@ body {
 }
 
 .info-item {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 139, 139, 0.15);
+  background: var(--info-item-bg);
+  border: 1px solid var(--info-item-border);
   padding: 0.75rem 1.25rem;
   border-radius: 50px;
   display: flex;
@@ -324,7 +352,7 @@ body {
   gap: 0.75rem;
   font-size: 0.95rem;
   color: var(--text-dark);
-  box-shadow: 0 4px 15px rgba(255, 139, 139, 0.05);
+  box-shadow: var(--info-item-shadow);
   transition: var(--transition-fast);
 }
 
@@ -386,9 +414,9 @@ body {
   height: 320px;
   border-radius: 50%;
   overflow: hidden;
-  border: 10px solid rgba(255, 255, 255, 0.8);
+  border: var(--profile-border);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-  background: #f7fafc;
+  background: var(--profile-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -405,7 +433,7 @@ body {
   font-size: 5rem;
   font-weight: 700;
   color: var(--primary-pink);
-  background: #fff5f5;
+  background: var(--avatar-bg);
   width: 100%;
   height: 100%;
   display: flex;
@@ -438,8 +466,8 @@ body {
 }
 
 .project-card {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: var(--project-card-bg);
+  border: 1px solid var(--project-card-border);
   border-radius: var(--border-radius-md);
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
@@ -456,13 +484,13 @@ body {
 
 .project-img {
   height: 180px;
-  background: #fff5f5;
+  background: var(--project-img-bg);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  border-bottom: 1px solid #f7fafc;
+  border-bottom: 1px solid var(--project-img-border);
 }
 
 .project-img img {
@@ -578,15 +606,15 @@ body {
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--contact-card-bg);
   padding: 1rem 1.5rem;
   border-radius: var(--border-radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--contact-card-border);
   transition: var(--transition-smooth);
 }
 
 .contact-detail-card:hover {
-  background: white;
+  background: var(--card-bg);
   border-color: rgba(255, 139, 139, 0.3);
   transform: translateX(5px);
   box-shadow: 0 10px 20px rgba(255, 139, 139, 0.05);
@@ -596,7 +624,7 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #fff0f0;
+  background: var(--contact-icon-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -631,8 +659,8 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 139, 139, 0.2);
+  background: var(--social-btn-bg);
+  border: 1px solid var(--social-btn-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -656,8 +684,8 @@ body {
 
 /* Contact Form */
 .contact-form-panel {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: var(--contact-form-bg);
+  border: 1px solid var(--contact-form-border);
   padding: 2.5rem;
   border-radius: var(--border-radius-md);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.02);
@@ -682,8 +710,8 @@ body {
   width: 100%;
   padding: 0.85rem 1.2rem;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(255, 139, 139, 0.25);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
   font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--text-dark);
@@ -764,14 +792,14 @@ textarea.form-input {
   right: -420px;
   width: 420px;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--customizer-bg);
   box-shadow: -15px 0 40px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   transition: var(--transition-smooth);
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(25px);
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid var(--card-border);
 }
 
 .customizer-drawer.open {
@@ -845,7 +873,7 @@ textarea.form-input {
 
 .customizer-footer {
   padding: 1.5rem 2rem;
-  background: #fcf8f8;
+  background: var(--customizer-footer-bg);
   border-top: 1px solid rgba(255, 139, 139, 0.1);
   display: flex;
   gap: 1rem;
@@ -854,9 +882,9 @@ textarea.form-input {
 .btn-secondary {
   flex: 1;
   padding: 0.85rem;
-  border: 1px solid rgba(255, 139, 139, 0.3);
+  border: 1px solid var(--btn-secondary-border);
   border-radius: var(--border-radius-sm);
-  background: white;
+  background: var(--btn-secondary-bg);
   color: var(--primary-pink);
   font-family: var(--font-heading);
   font-size: 0.95rem;
@@ -893,7 +921,7 @@ textarea.form-input {
 
 /* Dynamic Editor Projects styling */
 .editor-project-item {
-  background: rgba(255, 139, 139, 0.05);
+  background: var(--editor-item-bg);
   border: 1px dashed rgba(255, 139, 139, 0.25);
   border-radius: var(--border-radius-sm);
   padding: 1rem;
@@ -989,9 +1017,14 @@ textarea.form-input {
   
   .card-header {
     padding: 2rem 2rem 1rem 2rem;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     gap: 1.5rem;
-    align-items: flex-start;
+  }
+  
+  .nav-links {
+    gap: 1.5rem;
   }
   
   .card-body {
@@ -1049,4 +1082,187 @@ textarea.form-input {
     width: 100%;
     right: -100%;
   }
+}
+
+/* ==========================================================================
+   DARK THEME VARIABLE OVERRIDES
+   ========================================================================== */
+body.dark-theme {
+  --bg-gradient: linear-gradient(135deg, #160f1b 0%, #1e1126 50%, #100614 100%);
+  --primary-pink: #ffa3a3;
+  --primary-light: #ffc2c2;
+  --primary-hover: #ff8b8b;
+  --primary-gradient: linear-gradient(135deg, #ffb3a7 0%, #ffa3a3 100%);
+  --accent-salmon: #ff9490;
+  
+  --card-bg: rgba(26, 17, 33, 0.85);
+  --card-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  
+  --text-dark: #f7fafc;
+  --text-muted: #cbd5e0;
+  --text-light: #a0aec0;
+  
+  --card-border: rgba(255, 255, 255, 0.08);
+  --heading-line-bg: #2d2038;
+  --info-item-bg: rgba(255, 255, 255, 0.04);
+  --info-item-border: rgba(255, 163, 163, 0.15);
+  --info-item-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  --profile-border: 10px solid rgba(255, 255, 255, 0.08);
+  --profile-bg: #23162d;
+  --avatar-bg: #321e3c;
+  --project-card-bg: rgba(255, 255, 255, 0.03);
+  --project-card-border: rgba(255, 255, 255, 0.06);
+  --project-img-bg: #23162d;
+  --project-img-border: #2e1d3a;
+  --contact-card-bg: rgba(255, 255, 255, 0.03);
+  --contact-card-border: rgba(255, 255, 255, 0.06);
+  --contact-icon-bg: #321e3c;
+  --contact-form-bg: rgba(26, 17, 33, 0.6);
+  --contact-form-border: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-border: rgba(255, 163, 163, 0.15);
+  --customizer-bg: rgba(22, 14, 28, 0.96);
+  --customizer-footer-bg: #1c1124;
+  --btn-secondary-bg: #281b33;
+  --btn-secondary-border: rgba(255, 163, 163, 0.2);
+  --editor-item-bg: rgba(255, 163, 163, 0.03);
+  --social-btn-bg: rgba(255, 255, 255, 0.04);
+  --social-btn-border: rgba(255, 163, 163, 0.15);
+}
+
+/* Atmospheric Blobs Dark Override */
+body.dark-theme .blob-1 {
+  background: #5c183d;
+}
+
+body.dark-theme .blob-2 {
+  background: #2a1042;
+}
+
+/* Graphics Accent Dark Override */
+body.dark-theme .circle-graphic {
+  background: linear-gradient(145deg, #ff8b8b 0%, #e05e5e 100%);
+  box-shadow: -10px 10px 40px rgba(224, 94, 94, 0.3);
+}
+
+body.dark-theme .gray-circle-badge {
+  background: #2b1d36;
+}
+
+/* ==========================================================================
+   THEME TOGGLE BUTTON STYLING
+   ========================================================================== */
+.theme-toggle-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--info-item-bg);
+  border: 1px solid var(--info-item-border);
+  color: var(--primary-pink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--info-item-shadow);
+  transition: var(--transition-smooth);
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  border-color: var(--primary-pink);
+  box-shadow: 0 8px 20px rgba(255, 139, 139, 0.15);
+}
+
+body.dark-theme .theme-toggle-btn:hover {
+  box-shadow: 0 8px 20px rgba(255, 163, 163, 0.25);
+}
+
+.theme-toggle-btn svg {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+/* Light mode icon placement */
+.theme-toggle-btn .sun-icon {
+  opacity: 0;
+  transform: translateY(24px) rotate(90deg);
+}
+
+.theme-toggle-btn .moon-icon {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+}
+
+/* Dark mode icon placement overrides */
+body.dark-theme .theme-toggle-btn .sun-icon {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+}
+
+body.dark-theme .theme-toggle-btn .moon-icon {
+  opacity: 0;
+  transform: translateY(-24px) rotate(-90deg);
+}
+
+/* ==========================================================================
+   ACCESSIBILITY KEYBOARD FOCUS STYLES
+   ========================================================================== */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--primary-pink);
+  outline-offset: 3px;
+}
+
+/* Focus styles specifically for inputs with custom styling */
+.form-input:focus-visible {
+  outline: none;
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 0 4px rgba(255, 139, 139, 0.25);
+}
+
+/* ==========================================================================
+   THEME-SPECIFIC PROJECT IMAGES
+   ========================================================================== */
+/* Both images share base styling */
+.theme-img-dark,
+.theme-img-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Scale up to crop out corner watermarks/share/download UI overlays */
+  transform: scale(1.25);
+  transition: var(--transition-smooth);
+}
+
+/* Light mode (default): show light image, hide dark */
+.theme-img-dark {
+  display: none;
+}
+
+.theme-img-light {
+  display: block;
+}
+
+/* Dark mode: show dark image, hide light */
+body.dark-theme .theme-img-dark {
+  display: block;
+}
+
+body.dark-theme .theme-img-light {
+  display: none;
+}
+
+/* Hover zoom effect on theme images */
+.project-card:hover .theme-img-dark,
+.project-card:hover .theme-img-light {
+  transform: scale(1.35);
 }

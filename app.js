@@ -19,21 +19,21 @@ const DEFAULT_PORTFOLIO_DATA = {
   ],
   projects: [
     {
-      name: "Neo-Brutalist Dashboard",
-      category: "Web Application",
-      description: "A minimalist dashboard design layout emphasizing extreme contrast, bold colors, and smooth visual analytics widgets.",
+      name: "Brand Identity",
+      category: "Brand Identity",
+      description: "A complete visual identity system featuring custom typography, a minimalist color palette, and premium brand guidelines for a modern brand.",
       link: "#"
     },
     {
-      name: "Glow - Meditation App",
-      category: "Mobile UI Design",
-      description: "Calming visual assets, premium dynamic gradients, and fluid micro-transitions for a mental wellbeing application prototype.",
+      name: "Packaging design",
+      category: "Packaging design",
+      description: "Eco-friendly packaging concepts featuring bespoke illustrations, clean typographic hierarchy, and a natural, Earth-toned aesthetic.",
       link: "#"
     },
     {
-      name: "Aurora Ecommerce",
-      category: "Creative Coding",
-      description: "A fast front-end store concept showcasing bespoke parallax scrolls, glassmorphic layouts, and high-fidelity cart checkout.",
+      name: "Digital Illustration",
+      category: "Digital Illustration",
+      description: "A series of vector illustrations exploring modern city life, utilizing a vibrant synthwave color palette and dramatic lighting effects.",
       link: "#"
     }
   ]
@@ -44,6 +44,7 @@ let portfolioData = {};
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
+  setupTheme();
   loadData();
   setupTabListeners();
   setupCustomizerListeners();
@@ -107,6 +108,44 @@ function loadData() {
         portfolioData.instagram = "https://www.instagram.com/_subx._/";
         portfolioData.github = "https://github.com/Subhiksha-SB";
         localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
+      }
+      
+      // Auto-migrate standard default projects to new design definitions
+      if (portfolioData.projects && Array.isArray(portfolioData.projects)) {
+        let updated = false;
+        portfolioData.projects = portfolioData.projects.map(proj => {
+          if (proj.category === "Web Application" || proj.name === "Neo-Brutalist Dashboard") {
+            updated = true;
+            return {
+              name: "Brand Identity",
+              category: "Brand Identity",
+              description: "A complete visual identity system featuring custom typography, a minimalist color palette, and premium brand guidelines for a modern brand.",
+              link: proj.link || "#"
+            };
+          }
+          if (proj.category === "Mobile UI Design" || proj.name === "Glow - Meditation App") {
+            updated = true;
+            return {
+              name: "Packaging design",
+              category: "Packaging design",
+              description: "Eco-friendly packaging concepts featuring bespoke illustrations, clean typographic hierarchy, and a natural, Earth-toned aesthetic.",
+              link: proj.link || "#"
+            };
+          }
+          if (proj.category === "Creative Coding" || proj.name === "Aurora Ecommerce") {
+            updated = true;
+            return {
+              name: "Digital Illustration",
+              category: "Digital Illustration",
+              description: "A series of vector illustrations exploring modern city life, utilizing a vibrant synthwave color palette and dramatic lighting effects.",
+              link: proj.link || "#"
+            };
+          }
+          return proj;
+        });
+        if (updated) {
+          localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
+        }
       }
     } catch (e) {
       portfolioData = { ...DEFAULT_PORTFOLIO_DATA };
@@ -218,13 +257,35 @@ function renderData() {
       ];
       const selectedGradient = gradients[idx % gradients.length];
       
+      // Build the image area — theme-specific real images for select projects
+      let projectImgHTML;
+      if (proj.name === "Brand Identity") {
+        projectImgHTML = `
+          <div class="project-img">
+            <img class="theme-img-dark" src="brand-identity-dark.jpg" alt="Brand Identity – Dark Theme Preview">
+            <img class="theme-img-light" src="brand-identity-light.jpg" alt="Brand Identity – Light Theme Preview">
+          </div>
+        `;
+      } else if (proj.name === "Packaging design") {
+        projectImgHTML = `
+          <div class="project-img">
+            <img class="theme-img-dark" src="packaging-design-dark.png" alt="Packaging Design – Dark Theme Preview">
+            <img class="theme-img-light" src="packaging-design-light.png" alt="Packaging Design – Light Theme Preview">
+          </div>
+        `;
+      } else {
+        projectImgHTML = `
+          <div class="project-img">
+            <div class="project-placeholder" style="background: ${selectedGradient}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            </div>
+          </div>
+        `;
+      }
+
       // Inline template formatting for Project Cards
       card.innerHTML = `
-        <div class="project-img">
-          <div class="project-placeholder" style="background: ${selectedGradient}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-          </div>
-        </div>
+        ${projectImgHTML}
         <div class="project-info">
           <span class="project-tag">${proj.category || 'PROJECT'}</span>
           <h3 class="project-name">${proj.name || 'Untitled Project'}</h3>
@@ -416,4 +477,49 @@ function showToast(message) {
   setTimeout(() => {
     toast.classList.remove("show");
   }, 4000);
+}
+
+// --- Theme Handling (Dark/Light Mode) ---
+function setupTheme() {
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+  if (!themeToggleBtn) return;
+
+  // Retrieve cached theme or match system settings
+  const cachedTheme = localStorage.getItem("pastel_portfolio_theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  
+  const initialDark = cachedTheme === "dark" || (!cachedTheme && prefersDark);
+
+  if (initialDark) {
+    document.body.classList.add("dark-theme");
+    themeToggleBtn.setAttribute("aria-label", "Switch to light theme");
+  } else {
+    document.body.classList.remove("dark-theme");
+    themeToggleBtn.setAttribute("aria-label", "Switch to dark theme");
+  }
+
+  // Toggle Theme Event Listener
+  themeToggleBtn.addEventListener("click", () => {
+    const isDarkNow = document.body.classList.toggle("dark-theme");
+    
+    // Save to LocalStorage
+    localStorage.setItem("pastel_portfolio_theme", isDarkNow ? "dark" : "light");
+    
+    // Update Accessibility Label
+    themeToggleBtn.setAttribute("aria-label", isDarkNow ? "Switch to light theme" : "Switch to dark theme");
+  });
+
+  // Listen for system preference updates
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    // Only apply if user hasn't explicitly chosen a theme override
+    if (!localStorage.getItem("pastel_portfolio_theme")) {
+      if (e.matches) {
+        document.body.classList.add("dark-theme");
+        themeToggleBtn.setAttribute("aria-label", "Switch to light theme");
+      } else {
+        document.body.classList.remove("dark-theme");
+        themeToggleBtn.setAttribute("aria-label", "Switch to dark theme");
+      }
+    }
+  });
 }

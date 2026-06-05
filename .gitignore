@@ -2,3 +2,5 @@
 *.log
 .gemini/
 .system_generated/
+
+.vercel
