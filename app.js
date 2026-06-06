@@ -2,9 +2,9 @@
 
 // --- Default Profile & Portfolio Data ---
 const DEFAULT_PORTFOLIO_DATA = {
-  subheading: "Subhiksha",
-  heading: "Portfolio",
-  bio: "I am a digital artisan specializing in UI/UX and Front-end development. I design and build high-fidelity interactive interfaces that merge raw aesthetics with smooth, functional engineering.",
+  subheading: "SUBHIKSHA",
+  heading: "ABOUT ME",
+  bio: "\"Every brand has a story, and I’m here to make yours visually captivating. Hi, I’m SUBHIKSHA, a graphic designer dedicated to bridging the gap between creativity and strategy.I don't just make things look good—I make them impossible to ignore. Let's build something unforgettable.\"",
   phone: "6381309368",
   email: "sbsubhiksha139@gmail.com",
   location: "Coimbatore",
@@ -100,13 +100,32 @@ function loadData() {
       portfolioData = JSON.parse(cached);
       // Migrate legacy template details directly to user's credentials
       if (portfolioData.subheading === "Maxine Ficheux" || portfolioData.location === "Paris, France" || !portfolioData.linkedin || !portfolioData.instagram || !portfolioData.github || portfolioData.github === "https://github.com/") {
-        portfolioData.subheading = "Subhiksha";
+        portfolioData.subheading = "SUBHIKSHA";
         portfolioData.email = "sbsubhiksha139@gmail.com";
         portfolioData.phone = "6381309368";
         portfolioData.location = "Coimbatore";
         portfolioData.linkedin = "https://www.linkedin.com/in/subhiksha-sb-4854bb407/";
         portfolioData.instagram = "https://www.instagram.com/_subx._/";
         portfolioData.github = "https://github.com/Subhiksha-SB";
+        portfolioData.bio = DEFAULT_PORTFOLIO_DATA.bio;
+        localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
+      }
+
+      // Migrate existing Subhiksha entries to the new graphic designer details
+      let changed = false;
+      if (portfolioData.subheading === "Subhiksha") {
+        portfolioData.subheading = "SUBHIKSHA";
+        changed = true;
+      }
+      if (portfolioData.heading === "Portfolio" || !portfolioData.heading) {
+        portfolioData.heading = "ABOUT ME";
+        changed = true;
+      }
+      if (!portfolioData.bio || portfolioData.bio.includes("digital artisan") || portfolioData.bio.startsWith("I am a digital artisan") || portfolioData.bio.includes("high-fidelity interactive interfaces") || !portfolioData.bio.startsWith('"')) {
+        portfolioData.bio = DEFAULT_PORTFOLIO_DATA.bio;
+        changed = true;
+      }
+      if (changed) {
         localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
       }
       
