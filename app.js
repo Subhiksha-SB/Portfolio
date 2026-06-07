@@ -278,18 +278,28 @@ function renderData() {
       
       // Build the image area — theme-specific real images for select projects
       let projectImgHTML;
-      if (proj.name === "Brand Identity") {
+      const lowerName = (proj.name || "").toLowerCase().trim();
+      const lowerCat = (proj.category || "").toLowerCase().trim();
+
+      if (lowerName === "brand identity" || lowerCat === "brand identity" || lowerName.includes("brand")) {
         projectImgHTML = `
           <div class="project-img">
             <img class="theme-img-dark" src="brand-identity-dark.jpg" alt="Brand Identity – Dark Theme Preview">
             <img class="theme-img-light" src="brand-identity-light.jpg" alt="Brand Identity – Light Theme Preview">
           </div>
         `;
-      } else if (proj.name === "Packaging design") {
+      } else if (lowerName === "packaging design" || lowerCat === "packaging design" || lowerName.includes("packaging")) {
         projectImgHTML = `
           <div class="project-img">
             <img class="theme-img-dark" src="packaging-design-dark.png" alt="Packaging Design – Dark Theme Preview">
             <img class="theme-img-light" src="packaging-design-light.png" alt="Packaging Design – Light Theme Preview">
+          </div>
+        `;
+      } else if (lowerName === "digital illustration" || lowerCat === "digital illustration" || lowerName.includes("illustration")) {
+        projectImgHTML = `
+          <div class="project-img">
+            <img class="theme-img-dark" src="digital-illustration-dark.png" alt="Digital Illustration – Dark Theme Preview">
+            <img class="theme-img-light" src="digital-illustration-light.png" alt="Digital Illustration – Light Theme Preview">
           </div>
         `;
       } else {
