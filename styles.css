@@ -30,9 +30,9 @@
   /* Restructured Accessible Variables */
   --card-border: rgba(255, 255, 255, 0.5);
   --heading-line-bg: #eaecef;
-  --info-item-bg: rgba(255, 255, 255, 0.8);
-  --info-item-border: rgba(255, 139, 139, 0.15);
-  --info-item-shadow: 0 4px 15px rgba(255, 139, 139, 0.05);
+  --info-item-bg: rgba(255, 255, 255, 0.4);
+  --info-item-border: rgba(255, 255, 255, 0.5);
+  --info-item-shadow: 0 4px 20px rgba(255, 139, 139, 0.08);
   --profile-border: rgba(255, 255, 255, 0.8);
   --profile-bg: #f7fafc;
   --avatar-bg: #fff5f5;
@@ -73,6 +73,7 @@ body {
   overflow-x: hidden;
   position: relative;
   padding: 2rem 1rem;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s ease;
 }
 
 /* Atmospheric Background Blobs */
@@ -113,6 +114,16 @@ body {
   animation-delay: -5s;
 }
 
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: #ffc2d4;
+  top: 40%;
+  right: 15%;
+  animation-duration: 22s;
+  animation-delay: -3s;
+}
+
 @keyframes float {
   0% {
     transform: translate(0, 0) scale(1);
@@ -120,6 +131,31 @@ body {
   100% {
     transform: translate(60px, 40px) scale(1.15);
   }
+}
+
+/* Mesh Gradient Drift Animations */
+@keyframes meshDrift1 {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(25%, 15%) scale(1.1); }
+  66% { transform: translate(-10%, 25%) scale(0.95); }
+  100% { transform: translate(15%, -10%) scale(1.05); }
+}
+
+@keyframes meshDrift2 {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-20%, 10%) scale(1.15); }
+  66% { transform: translate(10%, -20%) scale(1); }
+  100% { transform: translate(-15%, 15%) scale(1.1); }
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+@keyframes avatarFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 /* Master Card Container */
@@ -137,6 +173,41 @@ body {
   z-index: 10;
   border: 1px solid var(--card-border);
   backdrop-filter: blur(20px);
+  transition: background 0.6s ease, box-shadow 0.6s ease, border-color 0.6s ease;
+}
+
+/* ✨ Page-load shine sweep across the card */
+.portfolio-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 45%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.45) 55%,
+    transparent 70%,
+    transparent 100%
+  );
+  z-index: 999;
+  pointer-events: none;
+  animation: shineSwipe 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+}
+
+@keyframes shineSwipe {
+  0% {
+    left: -100%;
+    opacity: 1;
+  }
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
 }
 
 /* Abstract Graphic Accents (mimicking the image) */
@@ -160,8 +231,36 @@ body {
   background: linear-gradient(145deg, #ffa4a1 0%, #ff8b8b 100%);
   border-radius: 50%;
   opacity: 0.95;
-  box-shadow: -10px 10px 40px rgba(255, 139, 139, 0.2);
-  transition: var(--transition-smooth);
+  box-shadow: -10px 10px 60px rgba(255, 139, 139, 0.25);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Animated mesh gradient layers inside the circle */
+.circle-graphic::before,
+.circle-graphic::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.circle-graphic::before {
+  width: 80%;
+  height: 80%;
+  top: -15%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(255, 210, 190, 0.85) 0%, transparent 70%);
+  animation: meshDrift1 8s ease-in-out infinite;
+}
+
+.circle-graphic::after {
+  width: 70%;
+  height: 70%;
+  bottom: -10%;
+  right: -5%;
+  background: radial-gradient(circle, rgba(255, 178, 200, 0.75) 0%, transparent 70%);
+  animation: meshDrift2 10s ease-in-out infinite;
 }
 
 /* Decorative concentric ring elements */
@@ -169,6 +268,7 @@ body {
   position: absolute;
   border: 8px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
+  animation: ringPulse 4s ease-in-out infinite;
 }
 
 .ring-1 {
@@ -176,6 +276,7 @@ body {
   height: 80px;
   right: 3%;
   top: 35%;
+  animation-delay: 0s;
 }
 
 .ring-2 {
@@ -183,6 +284,7 @@ body {
   height: 120px;
   right: 25%;
   bottom: -40px;
+  animation-delay: -2s;
 }
 
 /* Small floating gray-white badge from mockup */
@@ -353,12 +455,15 @@ body {
   font-size: 0.95rem;
   color: var(--text-dark);
   box-shadow: var(--info-item-shadow);
-  transition: var(--transition-fast);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: var(--transition-smooth);
 }
 
 .info-item:hover {
-  transform: translateY(-2px);
-  border-color: var(--primary-pink);
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(255, 139, 139, 0.4);
+  box-shadow: 0 8px 32px rgba(255, 139, 139, 0.18);
 }
 
 .info-item svg {
@@ -384,20 +489,24 @@ body {
 }
 
 .skill-tag {
-  background: rgba(255, 139, 139, 0.1);
+  background: rgba(255, 139, 139, 0.08);
   color: var(--primary-pink);
-  border: 1px solid rgba(255, 139, 139, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 0.5rem 1.2rem;
   border-radius: 50px;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: var(--transition-fast);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: var(--transition-smooth);
 }
 
 .skill-tag:hover {
   background: var(--primary-pink);
   color: white;
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 139, 139, 0.3);
+  border-color: var(--primary-pink);
 }
 
 /* About Right Image/Illustration placeholder */
@@ -421,6 +530,12 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
+  animation: avatarFloat 6s ease-in-out infinite;
+  transition: box-shadow 0.4s ease;
+}
+
+.hero-profile-container:hover {
+  box-shadow: 0 25px 50px rgba(255, 139, 139, 0.2);
 }
 
 .hero-profile-container img {
@@ -616,8 +731,8 @@ body {
 .contact-detail-card:hover {
   background: var(--card-bg);
   border-color: rgba(255, 139, 139, 0.3);
-  transform: translateX(5px);
-  box-shadow: 0 10px 20px rgba(255, 139, 139, 0.05);
+  transform: translateX(8px) scale(1.01);
+  box-shadow: 0 10px 30px rgba(255, 139, 139, 0.12);
 }
 
 .contact-icon-wrapper {
@@ -672,8 +787,8 @@ body {
 .social-btn:hover {
   background: var(--primary-pink);
   color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(255, 139, 139, 0.3);
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 8px 25px rgba(255, 139, 139, 0.4);
   border-color: var(--primary-pink);
 }
 
@@ -1084,6 +1199,59 @@ textarea.form-input {
   }
 }
 
+@media (max-width: 480px) {
+  .card-header {
+    padding: 1.5rem 1.25rem 0.75rem 1.25rem;
+  }
+
+  .card-body {
+    padding: 1rem 1.25rem 2rem 1.25rem;
+  }
+
+  .heading {
+    font-size: 2.8rem;
+  }
+
+  .info-row {
+    gap: 0.75rem;
+  }
+
+  .info-item {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .skill-tag {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .hero-profile-container {
+    width: 220px;
+    height: 220px;
+  }
+
+  .hero-profile-container .placeholder-avatar {
+    font-size: 3.5rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .nav-btn {
+    font-size: 1rem;
+  }
+
+  .contact-form-panel {
+    padding: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
 /* ==========================================================================
    DARK THEME VARIABLE OVERRIDES
    ========================================================================== */
@@ -1142,11 +1310,38 @@ body.dark-theme .blob-2 {
 /* Graphics Accent Dark Override */
 body.dark-theme .circle-graphic {
   background: linear-gradient(145deg, #ff8b8b 0%, #e05e5e 100%);
-  box-shadow: -10px 10px 40px rgba(224, 94, 94, 0.3);
+  box-shadow: -10px 10px 60px rgba(224, 94, 94, 0.35);
+}
+
+body.dark-theme .circle-graphic::before {
+  background: radial-gradient(circle, rgba(180, 80, 120, 0.7) 0%, transparent 70%);
+}
+
+body.dark-theme .circle-graphic::after {
+  background: radial-gradient(circle, rgba(140, 50, 80, 0.6) 0%, transparent 70%);
+}
+
+body.dark-theme .ring-graphic {
+  border-color: rgba(255, 163, 163, 0.2);
+}
+
+body.dark-theme .blob-3 {
+  background: #3d1650;
 }
 
 body.dark-theme .gray-circle-badge {
   background: #2b1d36;
+}
+
+/* Glassmorphism dark mode adjustments */
+body.dark-theme .skill-tag {
+  background: rgba(255, 163, 163, 0.06);
+  border-color: rgba(255, 163, 163, 0.15);
+}
+
+body.dark-theme .info-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(255, 163, 163, 0.1);
 }
 
 /* ==========================================================================
@@ -1170,9 +1365,18 @@ body.dark-theme .gray-circle-badge {
 }
 
 .theme-toggle-btn:hover {
-  transform: scale(1.1) rotate(15deg);
+  transform: scale(1.15) rotate(20deg);
   border-color: var(--primary-pink);
-  box-shadow: 0 8px 20px rgba(255, 139, 139, 0.15);
+  box-shadow: 0 0 0 4px rgba(255, 139, 139, 0.1), 0 8px 25px rgba(255, 139, 139, 0.2);
+}
+
+/* Smooth theme transition overlay — applied during dark/light toggle */
+body.theme-transitioning,
+body.theme-transitioning *,
+body.theme-transitioning *::before,
+body.theme-transitioning *::after {
+  transition: background-color 0.6s ease, color 0.4s ease, border-color 0.4s ease,
+    box-shadow 0.5s ease, background 0.6s ease !important;
 }
 
 body.dark-theme .theme-toggle-btn:hover {

@@ -9,7 +9,7 @@
   <meta name="description" content="Discover the creative portfolio of SUBHIKSHA, showcasing beautiful designs, frontend creations, and bespoke digital experiences. Customizable template.">
   <meta name="author" content="SUBHIKSHA">
   
-  <link rel="stylesheet" href="styles.css?v=1.0.3">
+  <link rel="stylesheet" href="styles.css?v=1.0.4">
 </head>
 <body>
 
@@ -17,6 +17,7 @@
   <div class="bg-blobs">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
   </div>
 
   <!-- Master Card Layout (mimics mockup) -->
@@ -80,7 +81,7 @@
             <div class="heading-line"></div>
             
             <p class="bio-paragraph" id="display-bio">
-              "Every brand has a story, and I’m here to make yours visually captivating. Hi, I’m SUBHIKSHA, a graphic designer dedicated to bridging the gap between creativity and strategy.I don't just make things look good—I make them impossible to ignore. Let's build something unforgettable."
+              "Every brand has a story, and I’m here to make yours visually captivating. Hi, I’m SUBHIKSHA, a graphic designer dedicated to bridging the gap between creativity and strategy. I don't just make things look good—I make them impossible to ignore. Let's build something unforgettable."
             </p>
             
             <!-- Contact Quick Details -->
@@ -182,17 +183,23 @@
           <!-- Contact Form Panel -->
           <div class="contact-form-panel">
             <form id="contact-form">
+              <!-- Web3Forms Configuration -->
+              <input type="hidden" name="access_key" id="web3forms-key" value="">
+              <input type="hidden" name="subject" value="New message from your Portfolio website">
+              <input type="hidden" name="from_name" value="Portfolio Contact Form">
+              <input type="checkbox" name="botcheck" style="display: none;">
+
               <div class="form-group">
                 <label for="form-name" class="form-label">Full Name</label>
-                <input type="text" id="form-name" class="form-input" placeholder="Your Name" required>
+                <input type="text" id="form-name" name="name" class="form-input" placeholder="Your Name" required>
               </div>
               <div class="form-group">
                 <label for="form-email" class="form-label">Email Address</label>
-                <input type="email" id="form-email" class="form-input" placeholder="name@domain.com" required>
+                <input type="email" id="form-email" name="email" class="form-input" placeholder="name@domain.com" required>
               </div>
               <div class="form-group">
                 <label for="form-message" class="form-label">Message</label>
-                <textarea id="form-message" class="form-input" placeholder="Hi, let's talk about..." required></textarea>
+                <textarea id="form-message" name="message" class="form-input" placeholder="Hi, let's talk about..." required></textarea>
               </div>
               <button type="submit" class="submit-btn" id="btn-submit-message">Send Message</button>
             </form>
@@ -315,6 +322,6 @@
   <!-- Custom Alert Toast Notifications -->
   <div class="toast" id="custom-toast">Customizer saved successfully!</div>
 
-  <script src="app.js?v=1.0.3"></script>
+  <script src="app.js?v=1.0.4"></script>
 </body>
 </html>

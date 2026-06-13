@@ -1,10 +1,14 @@
 // JavaScript Controller for Premium Pastel Portfolio
 
+// --- Web3Forms Access Key ---
+// Get your free key at https://web3forms.com (enter your email → check inbox → paste key below)
+const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
+
 // --- Default Profile & Portfolio Data ---
 const DEFAULT_PORTFOLIO_DATA = {
   subheading: "SUBHIKSHA",
   heading: "ABOUT ME",
-  bio: "\"Every brand has a story, and I’m here to make yours visually captivating. Hi, I’m SUBHIKSHA, a graphic designer dedicated to bridging the gap between creativity and strategy.I don't just make things look good—I make them impossible to ignore. Let's build something unforgettable.\"",
+  bio: "\"Every brand has a story, and I’m here to make yours visually captivating. Hi, I’m SUBHIKSHA, a graphic designer dedicated to bridging the gap between creativity and strategy. I don't just make things look good—I make them impossible to ignore. Let's build something unforgettable.\"",
   phone: "6381309368",
   email: "sbsubhiksha139@gmail.com",
   location: "Coimbatore",
@@ -126,6 +130,12 @@ function loadData() {
         changed = true;
       }
       if (changed) {
+        localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
+      }
+      
+      // Fix bio spacing: ensure space after "strategy."
+      if (portfolioData.bio && portfolioData.bio.includes("strategy.I")) {
+        portfolioData.bio = portfolioData.bio.replace("strategy.I", "strategy. I");
         localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
       }
       
@@ -480,19 +490,68 @@ function appendProjectEditorBlock(project) {
   listContainer.appendChild(block);
 }
 
-// --- Contact Form Submissions ---
+// --- Contact Form Submissions (via Web3Forms) ---
 function setupContactFormListener() {
   const form = document.getElementById("contact-form");
-  form.addEventListener("submit", (e) => {
+  const submitBtn = document.getElementById("btn-submit-message");
+
+  // Inject the access key into the hidden field
+  const keyField = document.getElementById("web3forms-key");
+  if (keyField) {
+    keyField.value = WEB3FORMS_ACCESS_KEY;
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     const senderName = document.getElementById("form-name").value.trim();
     const senderEmail = document.getElementById("form-email").value.trim();
     const senderMsg = document.getElementById("form-message").value.trim();
 
-    if (senderName && senderEmail && senderMsg) {
-      showToast(`Thank you ${senderName}! Message sent to ${portfolioData.subheading}.`);
-      form.reset();
+    if (!senderName || !senderEmail || !senderMsg) return;
+
+    // Check if access key is configured
+    if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY_HERE") {
+      showToast("⚠️ Web3Forms access key not configured. Please set it in app.js.");
+      return;
+    }
+
+    // Show loading state
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Sending...";
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.7";
+
+    try {
+      const formData = new FormData(form);
+      const dataObject = Object.fromEntries(formData);
+      const jsonPayload = JSON.stringify(dataObject);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: jsonPayload
+      });
+
+      const result = await response.json();
+
+      if (response.status === 200 && result.success) {
+        showToast(`✅ Thank you ${senderName}! Your message has been sent successfully.`);
+        form.reset();
+      } else {
+        showToast(`❌ Failed to send: ${result.message || "Please try again later."}`);
+      }
+    } catch (error) {
+      console.error("Contact form error:", error);
+      showToast("❌ Network error. Please check your connection and try again.");
+    } finally {
+      // Restore button state
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "1";
     }
   });
 }
@@ -527,8 +586,11 @@ function setupTheme() {
     themeToggleBtn.setAttribute("aria-label", "Switch to dark theme");
   }
 
-  // Toggle Theme Event Listener
+  // Toggle Theme Event Listener with smooth transition
   themeToggleBtn.addEventListener("click", () => {
+    // Enable smooth transitions for all elements during theme switch
+    document.body.classList.add("theme-transitioning");
+    
     const isDarkNow = document.body.classList.toggle("dark-theme");
     
     // Save to LocalStorage
@@ -536,6 +598,11 @@ function setupTheme() {
     
     // Update Accessibility Label
     themeToggleBtn.setAttribute("aria-label", isDarkNow ? "Switch to light theme" : "Switch to dark theme");
+    
+    // Remove transition class after animation completes
+    setTimeout(() => {
+      document.body.classList.remove("theme-transitioning");
+    }, 800);
   });
 
   // Listen for system preference updates
