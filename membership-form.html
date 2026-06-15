@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Tags -->
+  <title>Membership Form | Fradel and Spies Fitness</title>
+  <meta name="description" content="Join Fradel and Spies Fitness. Fill out the membership form to choose your plan — Regular, Gold, or Platinum.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="membership-form.css">
+</head>
+<body>
+
+  <div class="form-wrapper" id="membership-form-wrapper">
+
+    <!-- ========== HEADER BANNER ========== -->
+    <header class="form-header" id="form-header">
+      <div class="header-content">
+        <!-- Phoenix / Bird Logo SVG -->
+        <div class="logo-icon" id="header-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white">
+            <path d="M50 8C40 8 32 18 30 28C28 18 22 12 16 10C22 16 26 26 26 36C20 30 12 28 6 28C14 32 22 38 26 48C18 44 10 44 4 46C12 48 22 54 28 64C24 60 18 58 12 58C18 62 24 68 30 78C32 82 36 88 40 92L42 92C38 84 36 76 38 68C40 60 44 54 50 50C56 54 60 60 62 68C64 76 62 84 58 92L60 92C64 88 68 82 70 78C76 68 82 62 88 58C82 58 76 60 72 64C78 54 88 48 96 46C90 44 82 44 74 48C78 38 86 32 94 28C88 28 80 30 74 36C74 26 78 16 84 10C78 12 72 18 70 28C68 18 60 8 50 8Z"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 id="form-title">Membership Form</h1>
+          <p class="header-subtitle" id="form-subtitle">Fradel and Spies Fitness</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========== FORM BODY ========== -->
+    <form class="membership-form" id="membership-form" autocomplete="off">
+
+      <!-- ---- Personal Information Section ---- -->
+      <section class="form-section" id="personal-info-section">
+        <h2 class="section-title" id="personal-info-title">Personal Information</h2>
+
+        <div class="field-row" id="field-fullname">
+          <label class="field-label" for="input-fullname">Full Name</label>
+          <span class="field-colon">:</span>
+          <input type="text" class="field-input" id="input-fullname" name="fullname" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="field-row" id="field-placebirth">
+          <label class="field-label" for="input-placebirth">Place Birth</label>
+          <span class="field-colon">:</span>
+          <input type="text" class="field-input" id="input-placebirth" name="placebirth" placeholder="Enter your place of birth">
+        </div>
+
+        <div class="field-row" id="field-birthdate">
+          <label class="field-label" for="input-birthdate">Birth of Date</label>
+          <span class="field-colon">:</span>
+          <input type="date" class="field-input" id="input-birthdate" name="birthdate">
+        </div>
+
+        <div class="field-row" id="field-address">
+          <label class="field-label" for="input-address">Full Address</label>
+          <span class="field-colon">:</span>
+          <input type="text" class="field-input" id="input-address" name="address" placeholder="Enter your full address">
+        </div>
+
+        <div class="field-row" id="field-nationality">
+          <label class="field-label" for="input-nationality">Nationality</label>
+          <span class="field-colon">:</span>
+          <input type="text" class="field-input" id="input-nationality" name="nationality" placeholder="Enter your nationality">
+        </div>
+
+        <div class="field-row" id="field-city">
+          <label class="field-label" for="input-city">City/Country</label>
+          <span class="field-colon">:</span>
+          <input type="text" class="field-input" id="input-city" name="city" placeholder="Enter city or country">
+        </div>
+
+        <div class="field-row" id="field-gender">
+          <label class="field-label" for="input-gender">Gender</label>
+          <span class="field-colon">:</span>
+          <select class="field-input field-select" id="input-gender" name="gender">
+            <option value="" disabled selected>Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="field-row" id="field-email">
+          <label class="field-label" for="input-email">Email</label>
+          <span class="field-colon">:</span>
+          <input type="email" class="field-input" id="input-email" name="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="field-row" id="field-phone">
+          <label class="field-label" for="input-phone">Phone Number</label>
+          <span class="field-colon">:</span>
+          <input type="tel" class="field-input" id="input-phone" name="phone" placeholder="Enter your phone number">
+        </div>
+      </section>
+
+      <!-- ---- Type of Membership Section ---- -->
+      <section class="form-section" id="membership-type-section">
+        <h2 class="section-title" id="membership-type-title">Type Of Membership</h2>
+        <p class="section-note">*Choose your type of membership</p>
+
+        <div class="membership-options" id="membership-options">
+          <label class="membership-option" for="membership-regular" id="option-regular">
+            <input type="radio" name="membership" id="membership-regular" value="regular">
+            <span class="custom-radio"></span>
+            <span class="option-text">Regular <span class="option-duration">(3 month)</span></span>
+          </label>
+
+          <label class="membership-option" for="membership-gold" id="option-gold">
+            <input type="radio" name="membership" id="membership-gold" value="gold">
+            <span class="custom-radio"></span>
+            <span class="option-text">Gold <span class="option-duration">(6 month)</span></span>
+          </label>
+
+          <label class="membership-option" for="membership-platinum" id="option-platinum">
+            <input type="radio" name="membership" id="membership-platinum" value="platinum">
+            <span class="custom-radio"></span>
+            <span class="option-text">Platinum <span class="option-duration">(12 month)</span></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- ---- Term & Condition Section ---- -->
+      <section class="form-section" id="terms-section">
+        <h2 class="section-title terms-title" id="terms-title">Term &amp; Condition</h2>
+        <ul class="terms-list" id="terms-list">
+          <li>This membership is valid</li>
+          <li>Membership includes the facilities available</li>
+          <li>Membership is not automatic</li>
+        </ul>
+      </section>
+
+      <!-- ---- Submit Button ---- -->
+      <div class="form-actions" id="form-actions">
+        <button type="submit" class="submit-btn" id="btn-submit-membership">
+          <span class="btn-text">Submit Application</span>
+          <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="form-toast">Form submitted successfully!</div>
+
+  <script>
+    // ---------- Form Submission ----------
+    const form = document.getElementById('membership-form');
+    const toast = document.getElementById('form-toast');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Gather data
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => { data[key] = value; });
+
+      console.log('Membership Form Data:', data);
+
+      // Show toast
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+
+      // Reset form
+      form.reset();
+
+      // Re-trigger entrance animations on membership options
+      document.querySelectorAll('.membership-option').forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight; // trigger reflow
+        el.style.animation = '';
+      });
+    });
+
+    // ---------- Subtle field focus glow ----------
+    document.querySelectorAll('.field-input').forEach(input => {
+      input.addEventListener('focus', () => {
+        input.closest('.field-row')?.classList.add('row-focused');
+      });
+      input.addEventListener('blur', () => {
+        input.closest('.field-row')?.classList.remove('row-focused');
+      });
+    });
+
+    // ---------- Membership option hover ripple ----------
+    document.querySelectorAll('.membership-option').forEach(option => {
+      option.addEventListener('click', function() {
+        this.classList.add('clicked');
+        setTimeout(() => this.classList.remove('clicked'), 400);
+      });
+    });
+  </script>
+
+</body>
+</html>

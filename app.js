@@ -1,14 +1,13 @@
-// JavaScript Controller for Premium Pastel Portfolio
+// JavaScript Controller for Premium Grainy Mesh Portfolio
 
 // --- Web3Forms Access Key ---
-// Get your free key at https://web3forms.com (enter your email → check inbox → paste key below)
 const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
 
 // --- Default Profile & Portfolio Data ---
 const DEFAULT_PORTFOLIO_DATA = {
   subheading: "SUBHIKSHA",
-  heading: "ABOUT ME",
-  bio: "\"Every brand has a story, and I’m here to make yours visually captivating. Hi, I’m SUBHIKSHA, a graphic designer dedicated to bridging the gap between creativity and strategy. I don't just make things look good—I make them impossible to ignore. Let's build something unforgettable.\"",
+  heading: "Creative <i>visual</i> designer",
+  bio: "I am SUBHIKSHA, i create <i>unconventional</i> yet functional & visually pleasing interfaces for the mobile and web",
   phone: "6381309368",
   email: "sbsubhiksha139@gmail.com",
   location: "Coimbatore",
@@ -23,21 +22,21 @@ const DEFAULT_PORTFOLIO_DATA = {
   ],
   projects: [
     {
+      name: "Illustrations",
+      category: "Illustrations",
+      description: "Custom digital illustrations exploring modern interfaces, outline sketch vectors, and fine geometric compositions.",
+      link: "#"
+    },
+    {
       name: "Brand Identity",
-      category: "Brand Identity",
-      description: "A complete visual identity system featuring custom typography, a minimalist color palette, and premium brand guidelines for a modern brand.",
+      category: "Branding",
+      description: "A complete visual identity system featuring custom typography, a minimalist color palette, and premium brand guidelines.",
       link: "#"
     },
     {
-      name: "Packaging design",
-      category: "Packaging design",
-      description: "Eco-friendly packaging concepts featuring bespoke illustrations, clean typographic hierarchy, and a natural, Earth-toned aesthetic.",
-      link: "#"
-    },
-    {
-      name: "Digital Illustration",
-      category: "Digital Illustration",
-      description: "A series of vector illustrations exploring modern city life, utilizing a vibrant synthwave color palette and dramatic lighting effects.",
+      name: "Mobile & Web",
+      category: "UI/UX Design",
+      description: "Eco-friendly mobile designs featuring bespoke UI layout components, hierarchy systems, and organic typography structures.",
       link: "#"
     }
   ]
@@ -45,53 +44,103 @@ const DEFAULT_PORTFOLIO_DATA = {
 
 // State Store
 let portfolioData = {};
+let activeIndex = 0;
+let isAutoplay = true;
+const AUTOPLAY_DURATION = 5000; // 5 seconds
+let progressStartTime = 0;
+let animationFrameId = null;
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
-  setupTheme();
+  initTheme();
   loadData();
   setupTabListeners();
+  setupLensTracker();
   setupCustomizerListeners();
   setupContactFormListener();
 });
 
-// --- Tab Swapping Navigation ---
-function setupTabListeners() {
-  const navButtons = document.querySelectorAll(".nav-btn");
-  const sections = document.querySelectorAll(".tab-content");
-  const circleAccent = document.getElementById("card-circle-accent");
+// --- Magnifying Glass Lens Cursor Tracking ---
+function setupLensTracker() {
+  const trigger = document.getElementById("hero-interactive-trigger");
+  if (!trigger) return;
 
-  navButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const targetTab = btn.getAttribute("data-tab");
+  trigger.addEventListener("mousemove", (e) => {
+    const rect = trigger.getBoundingClientRect();
+    // Calculate cursor positions relative to trigger block
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Set custom properties on trigger
+    trigger.style.setProperty("--mouse-x", `${x}px`);
+    trigger.style.setProperty("--mouse-y", `${y}px`);
+  });
 
-      // Set active nav button
-      navButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      // Display matching section
-      sections.forEach(sec => {
-        sec.classList.remove("active");
-        if (sec.getAttribute("id") === `${targetTab}-section`) {
-          sec.classList.add("active");
-        }
-      });
-
-      // Subtle accent animation on change
-      if (circleAccent) {
-        if (targetTab === "portfolio") {
-          circleAccent.style.transform = "scale(0.85) translate(40px, -40px)";
-          circleAccent.style.opacity = "0.75";
-        } else if (targetTab === "contact") {
-          circleAccent.style.transform = "scale(0.7) translate(100px, -100px)";
-          circleAccent.style.opacity = "0.5";
-        } else {
-          circleAccent.style.transform = "scale(1) translate(0, 0)";
-          circleAccent.style.opacity = "0.95";
-        }
+  // Smooth scroll helper for down arrow
+  const scrollBtn = document.getElementById("hero-scroll-btn");
+  if (scrollBtn) {
+    scrollBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetSection = document.getElementById("portfolio-section");
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: "smooth" });
       }
     });
+  }
+}
+
+// --- Tab Scroll Navigation and Active Highlights ---
+function setupTabListeners() {
+  const navButtons = document.querySelectorAll(".nav-btn");
+  const scrollContainer = document.getElementById("main-container");
+
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetTab = btn.getAttribute("data-tab");
+      const targetSection = document.getElementById(`${targetTab}-section`);
+
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update active styling
+      navButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
   });
+
+  // Highlight navigation button based on scrolling using IntersectionObserver
+  if (scrollContainer) {
+    const sections = document.querySelectorAll(".snap-section");
+    const observerOptions = {
+      root: scrollContainer,
+      rootMargin: "-25% 0px -50% 0px", // Trigger when section fills middle of container
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute("id");
+          if (!id) return;
+          const tabName = id.replace("-section", "");
+          
+          navButtons.forEach(btn => {
+            if (btn.getAttribute("data-tab") === tabName) {
+              btn.classList.add("active");
+            } else {
+              btn.classList.remove("active");
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+  }
 }
 
 // --- Data Core Management ---
@@ -102,79 +151,32 @@ function loadData() {
   if (cached) {
     try {
       portfolioData = JSON.parse(cached);
-      // Migrate legacy template details directly to user's credentials
-      if (portfolioData.subheading === "Maxine Ficheux" || portfolioData.location === "Paris, France" || !portfolioData.linkedin || !portfolioData.instagram || !portfolioData.github || portfolioData.github === "https://github.com/") {
+      
+      // Migrate legacy text format to visual designer format
+      let changed = false;
+      if (portfolioData.subheading === "Maxine Ficheux" || portfolioData.subheading === "Subhiksha" || !portfolioData.linkedin) {
         portfolioData.subheading = "SUBHIKSHA";
         portfolioData.email = "sbsubhiksha139@gmail.com";
         portfolioData.phone = "6381309368";
         portfolioData.location = "Coimbatore";
-        portfolioData.linkedin = "https://www.linkedin.com/in/subhiksha-sb-4854bb407/";
-        portfolioData.instagram = "https://www.instagram.com/_subx._/";
-        portfolioData.github = "https://github.com/Subhiksha-SB";
-        portfolioData.bio = DEFAULT_PORTFOLIO_DATA.bio;
-        localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
-      }
-
-      // Migrate existing Subhiksha entries to the new graphic designer details
-      let changed = false;
-      if (portfolioData.subheading === "Subhiksha") {
-        portfolioData.subheading = "SUBHIKSHA";
+        portfolioData.linkedin = DEFAULT_PORTFOLIO_DATA.linkedin;
+        portfolioData.instagram = DEFAULT_PORTFOLIO_DATA.instagram;
+        portfolioData.github = DEFAULT_PORTFOLIO_DATA.github;
         changed = true;
       }
-      if (portfolioData.heading === "Portfolio" || !portfolioData.heading) {
-        portfolioData.heading = "ABOUT ME";
+      
+      if (!portfolioData.heading || portfolioData.heading === "ABOUT ME" || portfolioData.heading === "Portfolio") {
+        portfolioData.heading = DEFAULT_PORTFOLIO_DATA.heading;
         changed = true;
       }
-      if (!portfolioData.bio || portfolioData.bio.includes("digital artisan") || portfolioData.bio.startsWith("I am a digital artisan") || portfolioData.bio.includes("high-fidelity interactive interfaces") || !portfolioData.bio.startsWith('"')) {
+      
+      if (!portfolioData.bio || portfolioData.bio.includes("brand has a story") || portfolioData.bio.includes("digital artisan")) {
         portfolioData.bio = DEFAULT_PORTFOLIO_DATA.bio;
         changed = true;
       }
+      
       if (changed) {
         localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
-      }
-      
-      // Fix bio spacing: ensure space after "strategy."
-      if (portfolioData.bio && portfolioData.bio.includes("strategy.I")) {
-        portfolioData.bio = portfolioData.bio.replace("strategy.I", "strategy. I");
-        localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
-      }
-      
-      // Auto-migrate standard default projects to new design definitions
-      if (portfolioData.projects && Array.isArray(portfolioData.projects)) {
-        let updated = false;
-        portfolioData.projects = portfolioData.projects.map(proj => {
-          if (proj.category === "Web Application" || proj.name === "Neo-Brutalist Dashboard") {
-            updated = true;
-            return {
-              name: "Brand Identity",
-              category: "Brand Identity",
-              description: "A complete visual identity system featuring custom typography, a minimalist color palette, and premium brand guidelines for a modern brand.",
-              link: proj.link || "#"
-            };
-          }
-          if (proj.category === "Mobile UI Design" || proj.name === "Glow - Meditation App") {
-            updated = true;
-            return {
-              name: "Packaging design",
-              category: "Packaging design",
-              description: "Eco-friendly packaging concepts featuring bespoke illustrations, clean typographic hierarchy, and a natural, Earth-toned aesthetic.",
-              link: proj.link || "#"
-            };
-          }
-          if (proj.category === "Creative Coding" || proj.name === "Aurora Ecommerce") {
-            updated = true;
-            return {
-              name: "Digital Illustration",
-              category: "Digital Illustration",
-              description: "A series of vector illustrations exploring modern city life, utilizing a vibrant synthwave color palette and dramatic lighting effects.",
-              link: proj.link || "#"
-            };
-          }
-          return proj;
-        });
-        if (updated) {
-          localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
-        }
       }
     } catch (e) {
       portfolioData = { ...DEFAULT_PORTFOLIO_DATA };
@@ -182,6 +184,9 @@ function loadData() {
   } else {
     portfolioData = { ...DEFAULT_PORTFOLIO_DATA };
   }
+  
+  // Set default active index to 0
+  activeIndex = 0;
   renderData();
 }
 
@@ -189,6 +194,7 @@ function loadData() {
 function saveData(newData) {
   portfolioData = newData;
   localStorage.setItem("pastel_portfolio_data", JSON.stringify(portfolioData));
+  activeIndex = 0; // Reset carousel index
   renderData();
   showToast("Portfolio details successfully applied & saved!");
 }
@@ -197,18 +203,9 @@ function saveData(newData) {
 function resetData() {
   localStorage.removeItem("pastel_portfolio_data");
   portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO_DATA));
+  activeIndex = 0; // Reset carousel index
   renderData();
   showToast("Restored all elements to original template defaults.");
-}
-
-// Calculate name initials for the visual profile avatar badge
-function getInitials(nameString) {
-  if (!nameString) return "MF";
-  const words = nameString.trim().split(/\s+/);
-  if (words.length >= 2) {
-    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
-  }
-  return nameString.substring(0, 2).toUpperCase();
 }
 
 // Renders the entire profile based on current state variables
@@ -217,18 +214,24 @@ function renderData() {
   document.title = `${portfolioData.subheading} | Creative Portfolio`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) {
-    metaDesc.setAttribute("content", `Discover the creative portfolio of ${portfolioData.subheading}. ${portfolioData.bio.substring(0, 120)}...`);
+    metaDesc.setAttribute("content", `Discover the creative portfolio of ${portfolioData.subheading}.`);
   }
 
   // Bind values to UI elements
   document.getElementById("display-subheading").textContent = portfolioData.subheading;
-  document.getElementById("display-heading").textContent = portfolioData.heading;
-  document.getElementById("display-bio").textContent = portfolioData.bio;
+  const subTag = document.getElementById("display-subheading-tag");
+  if (subTag) subTag.textContent = portfolioData.subheading;
+  
+  // Display heading layers (mag lens support HTML tags like <i>)
+  document.getElementById("display-heading-bg").innerHTML = portfolioData.heading;
+  document.getElementById("display-heading-lens").innerHTML = portfolioData.heading;
+  
+  // Display bio (supports HTML tags)
+  document.getElementById("display-bio").innerHTML = portfolioData.bio;
   
   // Set Contact quick-bars
-  document.getElementById("display-phone").textContent = portfolioData.phone;
-  document.getElementById("display-email").textContent = portfolioData.email;
-  document.getElementById("display-location").textContent = portfolioData.location;
+  const displayLoc = document.getElementById("display-location");
+  if (displayLoc) displayLoc.textContent = portfolioData.location;
 
   // Set LinkedIn link
   const linkedinBtn = document.getElementById("social-linkedin");
@@ -252,9 +255,6 @@ function renderData() {
   document.getElementById("display-contact-email").textContent = portfolioData.email;
   document.getElementById("display-contact-phone").textContent = portfolioData.phone;
 
-  // Set Profile Avatar initials
-  document.getElementById("display-avatar").textContent = getInitials(portfolioData.subheading);
-
   // Render Skill Tags
   const skillsContainer = document.getElementById("display-skills");
   skillsContainer.innerHTML = "";
@@ -266,89 +266,261 @@ function renderData() {
       skillsContainer.appendChild(tag);
     });
   } else {
-    skillsContainer.innerHTML = `<span style="color: var(--text-light); font-size: 0.9rem;">No skills specified yet.</span>`;
+    skillsContainer.innerHTML = `<span style="color: var(--text-muted); font-size: 0.9rem;">No skills specified yet.</span>`;
   }
 
-  // Render Dynamic Projects Grid
+  // Render Stacked Project Cards & Controls
+  renderProjectsCarousel();
+}
+
+// --- 3D Stacked Card Deck Carousel Operations ---
+function renderProjectsCarousel() {
   const projectsGrid = document.getElementById("display-projects");
-  projectsGrid.innerHTML = "";
+  const dotsContainer = document.getElementById("carousel-dots-container");
   
-  if (portfolioData.projects && portfolioData.projects.length > 0) {
-    portfolioData.projects.forEach((proj, idx) => {
-      const card = document.createElement("div");
-      card.className = "project-card";
-      
-      // Select beautiful gradient styles per index for variance
-      const gradients = [
-        "linear-gradient(135deg, #ffd5d5 0%, #ffb8b8 100%)",
-        "linear-gradient(135deg, #ffe1d5 0%, #ffc5b8 100%)",
-        "linear-gradient(135deg, #ffd5e7 0%, #ffb8cf 100%)"
-      ];
-      const selectedGradient = gradients[idx % gradients.length];
-      
-      // Build the image area — theme-specific real images for select projects
-      let projectImgHTML;
-      const lowerName = (proj.name || "").toLowerCase().trim();
-      const lowerCat = (proj.category || "").toLowerCase().trim();
-
-      if (lowerName === "brand identity" || lowerCat === "brand identity" || lowerName.includes("brand")) {
-        projectImgHTML = `
-          <div class="project-img">
-            <img class="theme-img-dark" src="brand-identity-dark.jpg" alt="Brand Identity – Dark Theme Preview">
-            <img class="theme-img-light" src="brand-identity-light.jpg" alt="Brand Identity – Light Theme Preview">
-          </div>
-        `;
-      } else if (lowerName === "packaging design" || lowerCat === "packaging design" || lowerName.includes("packaging")) {
-        projectImgHTML = `
-          <div class="project-img">
-            <img class="theme-img-dark" src="packaging-design-dark.png" alt="Packaging Design – Dark Theme Preview">
-            <img class="theme-img-light" src="packaging-design-light.png" alt="Packaging Design – Light Theme Preview">
-          </div>
-        `;
-      } else if (lowerName === "digital illustration" || lowerCat === "digital illustration" || lowerName.includes("illustration")) {
-        projectImgHTML = `
-          <div class="project-img">
-            <img class="theme-img-dark" src="digital-illustration-dark.png" alt="Digital Illustration – Dark Theme Preview">
-            <img class="theme-img-light" src="digital-illustration-light.png" alt="Digital Illustration – Light Theme Preview">
-          </div>
-        `;
-      } else {
-        projectImgHTML = `
-          <div class="project-img">
-            <div class="project-placeholder" style="background: ${selectedGradient}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-            </div>
-          </div>
-        `;
-      }
-
-      // Inline template formatting for Project Cards
-      card.innerHTML = `
-        ${projectImgHTML}
-        <div class="project-info">
-          <span class="project-tag">${proj.category || 'PROJECT'}</span>
-          <h3 class="project-name">${proj.name || 'Untitled Project'}</h3>
-          <p class="project-description">${proj.description || 'No description available for this creative display.'}</p>
-          <a href="${proj.link || '#'}" class="project-link" target="_blank" rel="noopener">
-            View Live Artifact
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </a>
-        </div>
-      `;
-      projectsGrid.appendChild(card);
-    });
-  } else {
+  if (!projectsGrid) return;
+  
+  projectsGrid.innerHTML = "";
+  if (dotsContainer) dotsContainer.innerHTML = "";
+  
+  const projects = portfolioData.projects || [];
+  if (projects.length === 0) {
     projectsGrid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 0; color: var(--text-light);">
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 0; width: 100%;">
         <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No projects added yet.</p>
-        <p style="font-size: 0.9rem;">Open Customizer below to add creative pieces!</p>
+        <p style="font-size: 0.85rem;">Open the Customizer to insert work details!</p>
       </div>
     `;
+    const controls = document.querySelector(".carousel-controls");
+    if (controls) controls.style.display = "none";
+    return;
+  }
+
+  const controls = document.querySelector(".carousel-controls");
+  if (controls) controls.style.display = "flex";
+
+  const N = projects.length;
+  projects.forEach((proj, idx) => {
+    const card = document.createElement("div");
+    
+    // Set 3D deck depth stack class names initially
+    let stackClass = "card-hidden";
+    if (idx === activeIndex) {
+      stackClass = "card-0";
+    } else if (idx === (activeIndex + 1) % N) {
+      stackClass = "card-1";
+    } else if (idx === (activeIndex + 2) % N) {
+      stackClass = "card-2";
+    }
+    
+    card.className = `project-card ${stackClass}`;
+    
+    let projectImgHTML;
+    const lowerName = (proj.name || "").toLowerCase().trim();
+    const lowerCat = (proj.category || "").toLowerCase().trim();
+
+    if (lowerName === "brand identity" || lowerCat === "brand identity" || lowerName.includes("brand")) {
+      projectImgHTML = `
+        <div class="card-visual">
+          <img class="theme-img-dark" src="brand-identity-dark.jpg" alt="Brand Identity – Dark Preview">
+          <img class="theme-img-light" src="brand-identity-light.jpg" alt="Brand Identity – Light Preview">
+        </div>
+      `;
+    } else if (lowerName === "packaging design" || lowerCat === "packaging design" || lowerName.includes("packaging")) {
+      projectImgHTML = `
+        <div class="card-visual">
+          <img class="theme-img-dark" src="packaging-design-dark.png" alt="Packaging Design – Dark Preview">
+          <img class="theme-img-light" src="packaging-design-light.png" alt="Packaging Design – Light Preview">
+        </div>
+      `;
+    } else if (lowerName === "digital illustration" || lowerCat === "digital illustration" || lowerName.includes("illustration") || lowerName === "illustrations") {
+      projectImgHTML = `
+        <div class="card-visual">
+          <img class="theme-img-dark" src="digital-illustration-dark.png" alt="Digital Illustration – Dark Preview">
+          <img class="theme-img-light" src="digital-illustration-light.png" alt="Digital Illustration – Light Preview">
+        </div>
+      `;
+    } else {
+      projectImgHTML = `
+        <div class="card-visual">
+          <div class="card-placeholder-art">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="card-header-block">
+        <div class="card-title-group">
+          <span class="card-tag">${proj.category || 'PROJECT'}</span>
+          <h3 class="card-name">${proj.name || 'Untitled Project'}</h3>
+        </div>
+        <a href="${proj.link || '#'}" class="card-action-btn" target="_blank" rel="noopener" aria-label="View live project">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+      <div class="card-body-block">
+        <p class="card-desc">${proj.description || 'No description provided.'}</p>
+        ${projectImgHTML}
+      </div>
+    `;
+
+    // Click background cards to advance deck
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".card-action-btn")) return;
+      if (card.classList.contains("card-1") || card.classList.contains("card-2")) {
+        nextSlide();
+      }
+    });
+
+    projectsGrid.appendChild(card);
+
+    // Build slide indicator dots
+    if (dotsContainer) {
+      const dot = document.createElement("button");
+      dot.className = `dot ${idx === activeIndex ? 'active' : ''}`;
+      dot.setAttribute("aria-label", `Go to project ${idx + 1}`);
+      dot.addEventListener("click", () => goToSlide(idx));
+      dotsContainer.appendChild(dot);
+    }
+  });
+
+  // Reset and start animation loop
+  resetProgressBar();
+}
+
+function nextSlide() {
+  const cards = document.querySelectorAll(".project-card");
+  if (cards.length <= 1) return;
+
+  const N = cards.length;
+  const prevIndex = activeIndex;
+
+  // 1. Swipe current card out
+  const currentCard = cards[prevIndex];
+  if (currentCard) {
+    currentCard.className = "project-card card-out";
+  }
+
+  // 2. Advance pointer
+  activeIndex = (activeIndex + 1) % N;
+
+  // 3. Shift background cards forward
+  cards.forEach((card, idx) => {
+    if (idx === prevIndex) return;
+
+    if (idx === activeIndex) {
+      card.className = "project-card card-0";
+    } else if (idx === (activeIndex + 1) % N) {
+      card.className = "project-card card-1";
+    } else if (idx === (activeIndex + 2) % N) {
+      card.className = "project-card card-2";
+    } else {
+      card.className = "project-card card-hidden";
+    }
+  });
+
+  // 4. Move swiped card to hidden back after layout paint (650ms)
+  setTimeout(() => {
+    if (currentCard && currentCard.className.includes("card-out")) {
+      currentCard.className = "project-card card-hidden";
+    }
+  }, 650);
+
+  updateDots();
+  resetProgressBar();
+}
+
+function goToSlide(targetIdx) {
+  const cards = document.querySelectorAll(".project-card");
+  if (cards.length === 0 || targetIdx === activeIndex) return;
+
+  activeIndex = targetIdx;
+  const N = cards.length;
+
+  cards.forEach((card, idx) => {
+    if (idx === activeIndex) {
+      card.className = "project-card card-0";
+    } else if (idx === (activeIndex + 1) % N) {
+      card.className = "project-card card-1";
+    } else if (idx === (activeIndex + 2) % N) {
+      card.className = "project-card card-2";
+    } else {
+      card.className = "project-card card-hidden";
+    }
+  });
+
+  updateDots();
+  resetProgressBar();
+}
+
+function updateDots() {
+  const dots = document.querySelectorAll(".carousel-dots .dot");
+  dots.forEach((dot, idx) => {
+    if (idx === activeIndex) {
+      dot.classList.add("active");
+    } else {
+      dot.classList.remove("active");
+    }
+  });
+}
+
+function animateProgress() {
+  if (!isAutoplay) return;
+
+  const elapsed = Date.now() - progressStartTime;
+  const pct = Math.min((elapsed / AUTOPLAY_DURATION) * 100, 100);
+
+  const fill = document.getElementById("carousel-progress-fill");
+  if (fill) fill.style.width = `${pct}%`;
+
+  if (elapsed >= AUTOPLAY_DURATION) {
+    nextSlide();
+  } else {
+    animationFrameId = requestAnimationFrame(animateProgress);
+  }
+}
+
+function resetProgressBar() {
+  cancelAnimationFrame(animationFrameId);
+  const fill = document.getElementById("carousel-progress-fill");
+  if (fill) fill.style.width = "0%";
+  
+  if (isAutoplay) {
+    progressStartTime = Date.now();
+    animationFrameId = requestAnimationFrame(animateProgress);
+  }
+}
+
+function toggleAutoplay() {
+  const playPauseBtn = document.getElementById("carousel-play-pause");
+  if (!playPauseBtn) return;
+
+  const pauseIcon = playPauseBtn.querySelector(".icon-pause");
+  const playIcon = playPauseBtn.querySelector(".icon-play");
+
+  isAutoplay = !isAutoplay;
+  console.log("toggleAutoplay triggered. isAutoplay =", isAutoplay);
+  
+  // Toggle aria-label for accessibility
+  playPauseBtn.setAttribute("aria-label", isAutoplay ? "Pause Autoplay" : "Play Autoplay");
+
+  if (isAutoplay) {
+    if (pauseIcon) pauseIcon.style.display = "block";
+    if (playIcon) playIcon.style.display = "none";
+    progressStartTime = Date.now();
+    animationFrameId = requestAnimationFrame(animateProgress);
+  } else {
+    if (pauseIcon) pauseIcon.style.display = "none";
+    if (playIcon) playIcon.style.display = "block";
+    cancelAnimationFrame(animationFrameId);
+    const fill = document.getElementById("carousel-progress-fill");
+    if (fill) fill.style.width = "0%";
   }
 }
 
 // --- Live Customizer Operations ---
-
 function setupCustomizerListeners() {
   const drawer = document.getElementById("customizer-drawer");
   const overlay = document.getElementById("drawer-overlay");
@@ -375,7 +547,7 @@ function setupCustomizerListeners() {
   closeBtn.addEventListener("click", closeDrawer);
   overlay.addEventListener("click", closeDrawer);
 
-  // Add Dynamic Project form row inside customizer
+  // Add Dynamic Project row
   addProjectBtn.addEventListener("click", () => {
     appendProjectEditorBlock({ name: "", category: "", description: "", link: "#" });
   });
@@ -387,7 +559,6 @@ function setupCustomizerListeners() {
       .map(s => s.trim())
       .filter(s => s.length > 0);
 
-    // Parse all dynamically rendered project forms
     const projectBlocks = document.querySelectorAll(".editor-project-item");
     const updatedProjects = [];
     
@@ -422,14 +593,13 @@ function setupCustomizerListeners() {
 
   // Reset Customizations
   resetBtn.addEventListener("click", () => {
-    if (confirm("Are you sure you want to reset all modifications to default layouts?")) {
+    if (confirm("Are you sure you want to reset all modifications to defaults?")) {
       resetData();
       closeDrawer();
     }
   });
 }
 
-// Prefills inputs in the customizer slider to synchronize with store state
 function populateCustomizerForm() {
   document.getElementById("edit-subheading").value = portfolioData.subheading;
   document.getElementById("edit-heading").value = portfolioData.heading;
@@ -440,11 +610,8 @@ function populateCustomizerForm() {
   document.getElementById("edit-linkedin").value = portfolioData.linkedin || "";
   document.getElementById("edit-instagram").value = portfolioData.instagram || "";
   document.getElementById("edit-github").value = portfolioData.github || "";
-  
-  // Join skills list array into comma separated string
   document.getElementById("edit-skills").value = portfolioData.skills.join(", ");
 
-  // Populate dynamic projects editor
   const listContainer = document.getElementById("editor-projects-list");
   listContainer.innerHTML = "";
   if (portfolioData.projects && portfolioData.projects.length > 0) {
@@ -454,14 +621,13 @@ function populateCustomizerForm() {
   }
 }
 
-// Appends editable form rows for a dynamic project in the editor
 function appendProjectEditorBlock(project) {
   const listContainer = document.getElementById("editor-projects-list");
   const block = document.createElement("div");
   block.className = "editor-project-item";
   
   block.innerHTML = `
-    <button type="button" class="editor-project-delete" aria-label="Delete project from list">
+    <button type="button" class="editor-project-delete" aria-label="Delete project">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
     </button>
     <div class="form-group" style="margin-bottom: 0.75rem;">
@@ -478,11 +644,10 @@ function appendProjectEditorBlock(project) {
     </div>
     <div class="form-group" style="margin-bottom: 0;">
       <label class="form-label" style="font-size: 0.75rem;">Brief Description</label>
-      <textarea class="form-input edit-proj-desc" placeholder="Details of this design..." style="padding: 0.5rem 0.8rem; font-size: 0.85rem; min-height: 60px; height: 60px;">${project.description || ''}</textarea>
+      <textarea class="form-input edit-proj-desc" placeholder="Details..." style="padding: 0.5rem 0.8rem; font-size: 0.85rem; min-height: 60px; height: 60px;">${project.description || ''}</textarea>
     </div>
   `;
 
-  // Attach delete event directly
   block.querySelector(".editor-project-delete").addEventListener("click", () => {
     block.remove();
   });
@@ -495,7 +660,6 @@ function setupContactFormListener() {
   const form = document.getElementById("contact-form");
   const submitBtn = document.getElementById("btn-submit-message");
 
-  // Inject the access key into the hidden field
   const keyField = document.getElementById("web3forms-key");
   if (keyField) {
     keyField.value = WEB3FORMS_ACCESS_KEY;
@@ -510,13 +674,11 @@ function setupContactFormListener() {
 
     if (!senderName || !senderEmail || !senderMsg) return;
 
-    // Check if access key is configured
     if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY_HERE") {
-      showToast("⚠️ Web3Forms access key not configured. Please set it in app.js.");
+      showToast("⚠️ Web3Forms access key not configured. Set key in app.js.");
       return;
     }
 
-    // Show loading state
     const originalText = submitBtn.textContent;
     submitBtn.textContent = "Sending...";
     submitBtn.disabled = true;
@@ -539,16 +701,14 @@ function setupContactFormListener() {
       const result = await response.json();
 
       if (response.status === 200 && result.success) {
-        showToast(`✅ Thank you ${senderName}! Your message has been sent successfully.`);
+        showToast(`Thank you ${senderName}! Message sent successfully.`);
         form.reset();
       } else {
-        showToast(`❌ Failed to send: ${result.message || "Please try again later."}`);
+        showToast(`Failed to send: ${result.message || "Try again later."}`);
       }
     } catch (error) {
-      console.error("Contact form error:", error);
-      showToast("❌ Network error. Please check your connection and try again.");
+      showToast("Network error. Please try again.");
     } finally {
-      // Restore button state
       submitBtn.textContent = originalText;
       submitBtn.disabled = false;
       submitBtn.style.opacity = "1";
@@ -568,54 +728,36 @@ function showToast(message) {
 }
 
 // --- Theme Handling (Dark/Light Mode) ---
-function setupTheme() {
+function initTheme() {
   const themeToggleBtn = document.getElementById("theme-toggle-btn");
-  if (!themeToggleBtn) return;
-
-  // Retrieve cached theme or match system settings
   const cachedTheme = localStorage.getItem("pastel_portfolio_theme");
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  
-  const initialDark = cachedTheme === "dark" || (!cachedTheme && prefersDark);
+  const initialDark = cachedTheme === "dark" || (!cachedTheme && prefersDark) || !cachedTheme; // Default to dark
 
   if (initialDark) {
     document.body.classList.add("dark-theme");
-    themeToggleBtn.setAttribute("aria-label", "Switch to light theme");
+    document.body.classList.remove("light-theme");
+    if (themeToggleBtn) themeToggleBtn.setAttribute("aria-label", "Switch to light theme");
   } else {
+    document.body.classList.add("light-theme");
     document.body.classList.remove("dark-theme");
-    themeToggleBtn.setAttribute("aria-label", "Switch to dark theme");
+    if (themeToggleBtn) themeToggleBtn.setAttribute("aria-label", "Switch to dark theme");
   }
+}
 
-  // Toggle Theme Event Listener with smooth transition
-  themeToggleBtn.addEventListener("click", () => {
-    // Enable smooth transitions for all elements during theme switch
-    document.body.classList.add("theme-transitioning");
-    
-    const isDarkNow = document.body.classList.toggle("dark-theme");
-    
-    // Save to LocalStorage
-    localStorage.setItem("pastel_portfolio_theme", isDarkNow ? "dark" : "light");
-    
-    // Update Accessibility Label
-    themeToggleBtn.setAttribute("aria-label", isDarkNow ? "Switch to light theme" : "Switch to dark theme");
-    
-    // Remove transition class after animation completes
-    setTimeout(() => {
-      document.body.classList.remove("theme-transitioning");
-    }, 800);
-  });
-
-  // Listen for system preference updates
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-    // Only apply if user hasn't explicitly chosen a theme override
-    if (!localStorage.getItem("pastel_portfolio_theme")) {
-      if (e.matches) {
-        document.body.classList.add("dark-theme");
-        themeToggleBtn.setAttribute("aria-label", "Switch to light theme");
-      } else {
-        document.body.classList.remove("dark-theme");
-        themeToggleBtn.setAttribute("aria-label", "Switch to dark theme");
-      }
-    }
-  });
+function toggleTheme() {
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+  document.body.classList.add("theme-transitioning");
+  const isDark = document.body.classList.toggle("dark-theme");
+  document.body.classList.toggle("light-theme", !isDark);
+  
+  localStorage.setItem("pastel_portfolio_theme", isDark ? "dark" : "light");
+  if (themeToggleBtn) {
+    themeToggleBtn.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+  }
+  console.log("toggleTheme triggered. isDark =", isDark);
+  
+  setTimeout(() => {
+    document.body.classList.remove("theme-transitioning");
+  }, 800);
 }
