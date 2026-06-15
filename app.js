@@ -60,21 +60,86 @@ document.addEventListener("DOMContentLoaded", () => {
   setupContactFormListener();
 });
 
-// --- Magnifying Glass Lens Cursor Tracking ---
+// --- Auto-Drifting Magnifying Glass Lens ---
 function setupLensTracker() {
   const trigger = document.getElementById("hero-interactive-trigger");
   if (!trigger) return;
 
+  let isMouseInside = false;
+  let mouseX = 0, mouseY = 0;
+  let currentX = 0, currentY = 0;
+  const lensStartTime = Date.now();
+
+  // Auto-drift path: smooth sinusoidal figure-8 across the title area
+  function getAutoDriftPos(time) {
+    const rect = trigger.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    // Slow, organic drift using combined sine waves
+    const t = time * 0.0004; // Speed factor
+    const x = w * 0.15 + (w * 0.7) * (0.5 + 0.5 * Math.sin(t * 1.1 + 0.3));
+    const y = h * 0.2 + (h * 0.6) * (0.5 + 0.5 * Math.sin(t * 0.7 + 1.7));
+    return { x, y };
+  }
+
+  // Animation loop: blend between auto-drift and mouse position
+  function animateLens() {
+    const elapsed = Date.now() - lensStartTime;
+    let targetX, targetY;
+
+    if (isMouseInside) {
+      targetX = mouseX;
+      targetY = mouseY;
+    } else {
+      const auto = getAutoDriftPos(elapsed);
+      targetX = auto.x;
+      targetY = auto.y;
+    }
+
+    // Smooth interpolation (ease toward target)
+    currentX += (targetX - currentX) * 0.04;
+    currentY += (targetY - currentY) * 0.04;
+
+    trigger.style.setProperty("--lens-x", `${currentX}px`);
+    trigger.style.setProperty("--lens-y", `${currentY}px`);
+
+    requestAnimationFrame(animateLens);
+  }
+
+  // Start the lens animation immediately
+  const initPos = getAutoDriftPos(0);
+  currentX = initPos.x;
+  currentY = initPos.y;
+  requestAnimationFrame(animateLens);
+
+  // Track mouse when hovering over the title
   trigger.addEventListener("mousemove", (e) => {
     const rect = trigger.getBoundingClientRect();
-    // Calculate cursor positions relative to trigger block
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    // Set custom properties on trigger
-    trigger.style.setProperty("--mouse-x", `${x}px`);
-    trigger.style.setProperty("--mouse-y", `${y}px`);
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    isMouseInside = true;
   });
+
+  trigger.addEventListener("mouseleave", () => {
+    isMouseInside = false;
+  });
+
+  // Click anywhere on hero section → scroll to page 2
+  const heroSection = document.getElementById("about-section");
+  if (heroSection) {
+    heroSection.addEventListener("click", (e) => {
+      // Don't trigger on nav buttons, theme toggle, or links
+      if (e.target.closest(".site-header") || 
+          e.target.closest(".customizer-trigger") ||
+          e.target.closest("a") || 
+          e.target.closest("button")) return;
+      
+      const targetSection = document.getElementById("portfolio-section");
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  }
 
   // Smooth scroll helper for down arrow
   const scrollBtn = document.getElementById("hero-scroll-btn");
@@ -87,6 +152,35 @@ function setupLensTracker() {
       }
     });
   }
+
+  // Reveal bio text and skills with slide-up animation on scroll
+  setupPortfolioReveal();
+}
+
+// --- Animated Text Reveal for Page 2 ---
+function setupPortfolioReveal() {
+  const bio = document.querySelector(".bio-paragraph");
+  const skills = document.querySelector(".skills-block");
+  if (!bio && !skills) return;
+
+  const scrollContainer = document.getElementById("main-container");
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("revealed");
+      } else {
+        // Reset when scrolling away so it re-animates on return
+        entry.target.classList.remove("revealed");
+      }
+    });
+  }, { 
+    root: scrollContainer,
+    threshold: 0.2 
+  });
+
+  if (bio) observer.observe(bio);
+  if (skills) observer.observe(skills);
 }
 
 // --- Tab Scroll Navigation and Active Highlights ---
