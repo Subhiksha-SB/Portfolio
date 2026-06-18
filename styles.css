@@ -333,7 +333,9 @@ body.light-theme .theme-toggle-btn .moon-icon {
 }
 
 /* Shared Serif Italic details */
-.serif-italic-accent {
+.serif-italic-accent,
+.hero-heading i,
+.bio-paragraph i {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
@@ -378,7 +380,8 @@ body.light-theme .theme-toggle-btn .moon-icon {
   color: var(--text-primary);
 }
 
-.hero-heading .serif-italic-accent {
+.hero-heading .serif-italic-accent,
+.hero-heading i {
   color: var(--accent-gold);
   font-size: 8rem;
   letter-spacing: 0px;
@@ -566,7 +569,8 @@ body.light-theme #portfolio-section {
   transform: translateY(0);
 }
 
-.bio-paragraph .serif-italic-accent {
+.bio-paragraph .serif-italic-accent,
+.bio-paragraph i {
   color: var(--accent-teal);
   font-size: 2.5rem;
 }
@@ -1336,7 +1340,8 @@ textarea.form-input {
   .hero-heading {
     font-size: 5.2rem;
   }
-  .hero-heading .serif-italic-accent {
+  .hero-heading .serif-italic-accent,
+  .hero-heading i {
     font-size: 5.8rem;
   }
   
@@ -1391,7 +1396,8 @@ textarea.form-input {
     text-align: center;
   }
   
-  .hero-heading .serif-italic-accent {
+  .hero-heading .serif-italic-accent,
+  .hero-heading i {
     font-size: 4rem;
   }
   
@@ -1474,7 +1480,8 @@ textarea.form-input {
     font-size: 2.8rem;
   }
   
-  .hero-heading .serif-italic-accent {
+  .hero-heading .serif-italic-accent,
+  .hero-heading i {
     font-size: 3.2rem;
   }
   
